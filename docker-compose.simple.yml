@@ -13,6 +13,8 @@ services:
       - ${OUTPUT_DIR:-./output}:/app/output
       - ${INPUT_DIR:-./uploads}:/app/uploads
       - ${LOG_DIR:-./logs}:/app/logs
+      # モデルキャッシュ用ボリューム（再ダウンロードを防ぐ）
+      - ${MODEL_CACHE_DIR:-./model_cache}:/root/.cache
     restart: unless-stopped
     
     # NVIDIA GPU サポート
