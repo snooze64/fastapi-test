@@ -5,10 +5,9 @@ lightrag-hku
 mineru[core]
 tqdm
 
-# GPU-optimized packages
-torch>=1.12.1
-torchvision>=0.13.1
-# PyTorch with CUDA support will be installed via Dockerfile
+# GPU-optimized packages (CUDA 11.1 compatible)
+# torch==1.10.2+cu111 and torchvision==0.11.3+cu111 will be installed via Dockerfile
+# Using older but stable versions compatible with CUDA 11.1
 
 # CUDA-accelerated packages for better performance
 nvidia-ml-py3
@@ -18,10 +17,10 @@ py3nvml
 pillow>=10.0.0
 opencv-python-headless
 
-# Additional ML packages that benefit from GPU
-transformers>=4.21.0
-sentence-transformers
-accelerate
+# Additional ML packages that benefit from GPU (CUDA 11.1 compatible)
+transformers>=4.12.0,<4.22.0
+sentence-transformers>=2.1.0,<2.3.0
+accelerate>=0.12.0,<0.15.0
 
 # FastAPI and web dependencies
 fastapi>=0.68.0
