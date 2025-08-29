@@ -1,0 +1,33 @@
+# RAG-Anything GPU Requirements
+# Base requirements
+huggingface_hub
+lightrag-hku
+mineru[core]
+tqdm
+
+# GPU-optimized packages
+torch>=1.12.1
+torchvision>=0.13.1
+# PyTorch with CUDA support will be installed via Dockerfile
+
+# CUDA-accelerated packages for better performance
+nvidia-ml-py3
+py3nvml
+
+# Optional image processing (GPU accelerated when available)
+pillow>=10.0.0
+opencv-python-headless
+
+# Additional ML packages that benefit from GPU
+transformers>=4.21.0
+sentence-transformers
+accelerate
+
+# FastAPI and web dependencies
+fastapi>=0.68.0
+uvicorn[standard]>=0.15.0
+python-multipart>=0.0.5
+aiofiles
+
+# Monitoring and logging
+psutil
