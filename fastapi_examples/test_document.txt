@@ -1,0 +1,9 @@
+This is a test document for the RAGAnything FastAPI example.
+
+It contains various information about document processing capabilities:
+- Text extraction and analysis
+- Natural language querying
+- Document understanding
+- FastAPI integration
+
+This document will be used to test the complete workflow from file upload to querying processed content.

@@ -1,0 +1,38 @@
+services:
+  simple-rag-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: simple-rag-api
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    env_file:
+      - .env.complete
+    volumes:
+      - ${WORKING_DIR:-./rag_storage}:/app/rag_storage
+      - ${OUTPUT_DIR:-./output}:/app/output
+      - ${INPUT_DIR:-./uploads}:/app/uploads
+      - ${LOG_DIR:-./logs}:/app/logs
+    restart: unless-stopped
+    
+    # NVIDIA GPU サポート
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    
+    # Docker Compose v2.3以下の場合は以下をコメントアウト
+    # runtime: nvidia
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+    #   - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8000}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
