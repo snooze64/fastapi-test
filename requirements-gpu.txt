@@ -1,8 +1,7 @@
 # RAG-Anything GPU Requirements
 # Base requirements
-huggingface_hub
-lightrag-hku
-mineru[core]
+huggingface_hub<0.20.0
+lightrag-hku<2.0.0
 tqdm
 
 # GPU-optimized packages (CUDA 11.1 compatible)
@@ -14,8 +13,8 @@ nvidia-ml-py3
 py3nvml
 
 # Optional image processing (GPU accelerated when available)
-pillow>=10.0.0
-opencv-python-headless
+pillow>=9.0.0,<10.0.0
+opencv-python-headless<4.9.0
 
 # Additional ML packages that benefit from GPU (CUDA 11.1 compatible)
 transformers>=4.12.0,<4.22.0
@@ -23,10 +22,12 @@ sentence-transformers>=2.1.0,<2.3.0
 accelerate>=0.12.0,<0.15.0
 
 # FastAPI and web dependencies
-fastapi>=0.68.0
-uvicorn[standard]>=0.15.0
+fastapi>=0.68.0,<0.100.0
+uvicorn[standard]>=0.15.0,<0.20.0
 python-multipart>=0.0.5
 aiofiles
 
 # Monitoring and logging
 psutil
+
+# Note: mineru will be installed separately via RAG-Anything setup.py

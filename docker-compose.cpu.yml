@@ -1,0 +1,42 @@
+services:
+  rag-api-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    container_name: rag-api-cpu
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    env_file:
+      - .env
+    volumes:
+      - ${WORKING_DIR:-./rag_storage}:/app/rag_storage
+      - ${OUTPUT_DIR:-./output}:/app/output
+      - ${INPUT_DIR:-./uploads}:/app/uploads
+      - ${LOG_DIR:-./logs}:/app/logs
+      # モデルキャッシュ用ボリューム（再ダウンロードを防ぐ）
+      - ${MODEL_CACHE_DIR:-./model_cache}:/root/.cache
+      # RAG-Anythingディレクトリをマウント（開発時の変更を反映）
+      - ./RAG-Anything:/app/rag_anything_source
+    restart: unless-stopped
+    
+    # NVIDIA GPU サポート（CPU版では無効化）
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    
+    # Docker Compose v2.3以下の場合は以下をコメントアウト
+    # runtime: nvidia
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+    #   - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8000}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s

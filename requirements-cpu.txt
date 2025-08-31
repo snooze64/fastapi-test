@@ -1,0 +1,25 @@
+# RAG-Anything CPU Requirements
+# Base requirements
+huggingface_hub
+lightrag-hku
+tqdm
+
+# CPU-optimized packages
+pillow>=10.0.0
+opencv-python-headless
+
+# Additional ML packages for CPU
+transformers>=4.12.0
+sentence-transformers>=2.1.0
+accelerate>=0.12.0
+
+# FastAPI and web dependencies
+fastapi>=0.68.0
+uvicorn[standard]>=0.15.0
+python-multipart>=0.0.5
+aiofiles
+
+# Monitoring and logging
+psutil
+
+# Note: mineru will be installed separately via RAG-Anything setup.py

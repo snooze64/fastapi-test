@@ -1,13 +1,13 @@
 services:
-  simple-rag-api:
+  rag-api-gpu:
     build:
       context: .
-      dockerfile: Dockerfile.simple
-    container_name: simple-rag-api
+      dockerfile: Dockerfile.gpu
+    container_name: rag-api-gpu
     ports:
       - "${PORT:-8000}:${PORT:-8000}"
     env_file:
-      - .env.complete
+      - .env
     volumes:
       - ${WORKING_DIR:-./rag_storage}:/app/rag_storage
       - ${OUTPUT_DIR:-./output}:/app/output
@@ -15,16 +15,18 @@ services:
       - ${LOG_DIR:-./logs}:/app/logs
       # モデルキャッシュ用ボリューム（再ダウンロードを防ぐ）
       - ${MODEL_CACHE_DIR:-./model_cache}:/root/.cache
+      # RAG-Anythingディレクトリをマウント（開発時の変更を反映）
+      - ./RAG-Anything:/app/rag_anything_source
     restart: unless-stopped
     
-    # NVIDIA GPU サポート
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # NVIDIA GPU サポート（一時的に無効化）
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     
     # Docker Compose v2.3以下の場合は以下をコメントアウト
     # runtime: nvidia

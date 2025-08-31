@@ -1,0 +1,80 @@
+# Simple RAG-Anything Dockerfile (CPU Version)
+FROM ubuntu:22.04
+
+# 環境変数設定
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# MinerU・Hugging Face・ModelScope キャッシュ設定
+ENV MODELSCOPE_CACHE=/root/.cache/modelscope
+ENV HF_HOME=/root/.cache/huggingface
+ENV HF_DATASETS_CACHE=/root/.cache/huggingface/datasets
+ENV TORCH_HOME=/root/.cache/torch
+
+# 作業ディレクトリ設定
+WORKDIR /app
+
+# システムパッケージの更新とPython環境のセットアップ
+# Ubuntu 22.04 + Python 3.10 (RAG-Anythingと互換性良好)
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    python3.10 \
+    python3.10-dev \
+    python3.10-distutils \
+    python3.10-venv \
+    curl \
+    wget \
+    git \
+    build-essential \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libreoffice \
+    libffi-dev \
+    libssl-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python 3.10をデフォルトに設定
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+
+# pipをPython 3.10用にインストール
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.10 get-pip.py && \
+    rm get-pip.py
+
+# Python依存関係（CPU版）
+COPY requirements-cpu.txt ./
+RUN pip install --upgrade pip && \
+    pip install -r requirements-cpu.txt
+
+# PyTorch CPU版のインストール（利用可能なバージョンを使用）
+RUN pip install torch==2.6.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+
+# RAG-Anythingディレクトリの内容をコピー
+COPY RAG-Anything/raganything/ ./raganything/
+COPY RAG-Anything/setup.py ./
+COPY RAG-Anything/requirements.txt ./
+
+# RAG-Anythingインストール
+RUN pip install -e .
+
+# アプリケーションファイル（外側のディレクトリから）
+COPY simple_api.py ./
+
+# ディレクトリ作成
+RUN mkdir -p rag_storage output uploads
+
+# MinerUモデルの事前ダウンロード（CPU環境用）
+RUN echo "Preparing MinerU models..." && \
+    python3 -c "import os; os.makedirs('/root/.cache/modelscope', exist_ok=True); os.makedirs('/root/.cache/huggingface', exist_ok=True); os.makedirs('./models', exist_ok=True); print('MinerU model directories prepared')" || echo "Model preparation completed with warnings"
+
+# ポート公開
+EXPOSE 8000
+
+# サーバー起動
+CMD ["python", "simple_api.py"]
