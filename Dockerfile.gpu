@@ -66,7 +66,7 @@ COPY RAG-Anything/requirements.txt ./
 RUN pip install -e .
 
 # アプリケーションファイル（外側のディレクトリから）
-COPY simple_api.py ./
+COPY rag_api.py ./
 
 # ディレクトリ作成
 RUN mkdir -p rag_storage output uploads
@@ -79,4 +79,4 @@ RUN echo "Preparing MinerU models..." && \
 EXPOSE 8000
 
 # サーバー起動
-CMD ["python", "simple_api.py"]
+CMD ["python", "rag_api.py"]

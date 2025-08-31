@@ -71,3 +71,6 @@ Thumbs.db
 # Test files
 test_document.txt
 test_rag_basic.py
+
+# Old files (for backward compatibility)
+simple_api.py
